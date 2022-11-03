@@ -30,7 +30,7 @@ public class FurnitureController {
 		return new ResponseEntity<>(furnitureBodies,HttpStatus.OK);
 	}
 	
-	@GetMapping("find/{id}")
+	@GetMapping("/find/{id}")
 	public ResponseEntity<FurnitureBody> getFurnitureBodyById(@PathVariable("id") Long id){
 		final FurnitureBody furnitureBody = furnitureBodyService.findFurnitureBodyById(id);
 		return new ResponseEntity<>(furnitureBody,HttpStatus.OK);
@@ -48,4 +48,10 @@ public class FurnitureController {
 		return new ResponseEntity<>(persistenFurnitureBody,HttpStatus.OK);
 	}
 
+	@GetMapping("delete/{id}")
+	public ResponseEntity<?> deleteFurnitureBodyById(@PathVariable("id") Long id){
+		furnitureBodyService.delete(id);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 }
