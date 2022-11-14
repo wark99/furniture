@@ -89,15 +89,6 @@ pipeline {
             // Let's wipe out the workspace before we finish!
             deleteDir()
         }
-        success {
-            sendEmail("Successful");
-        }
-        unstable {
-            sendEmail("Unstable");
-        }
-        failure {
-            sendEmail("Failed");
-        }
     }
 
 // The options directive is for configuration that applies to the whole job.
@@ -135,13 +126,6 @@ def getChangeString() {
         changeString = " - No new changes"
     }
     return changeString
-}
-
-def sendEmail(status) {
-    mail(
-            to: "$EMAIL_RECIPIENTS",
-            subject: "Build $BUILD_NUMBER - " + status + " (${currentBuild.fullDisplayName})",
-            body: "Changes:\n " + getChangeString() + "\n\n Check console output at: $BUILD_URL/console" + "\n")
 }
 
 def getDevVersion() {
