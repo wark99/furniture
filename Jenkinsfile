@@ -1,5 +1,6 @@
 pipeline {
     // global env variables
+    agent any
     environment {
         EMAIL_RECIPIENTS = 'tibor.kiss@ms.sapientia.ro'
     }
