@@ -42,7 +42,7 @@ pipeline {
             // Run integration test
             steps {
                 script {
-                    def mvnHome = tool 'Maven 3.5.2'
+                    def mvnHome = tool 'Maven'
                     if (isUnix()) {
                         // just to trigger the integration test without unit testing
                         sh "'${mvnHome}/bin/mvn'  verify -Dunit-tests.skip=true"
@@ -59,7 +59,7 @@ pipeline {
             // Run the sonar scan
             steps {
                 script {
-                    def mvnHome = tool 'Maven 3.5.2'
+                    def mvnHome = tool 'Maven'
                     withSonarQubeEnv {
 
                         sh "'${mvnHome}/bin/mvn'  verify sonar:sonar -Dintegration-tests.skip=true -Dmaven.test.failure.ignore=true"
