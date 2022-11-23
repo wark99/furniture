@@ -43,8 +43,8 @@ public class ServicePointController {
 
     //TODO vaidam: Ez igy nagyon megengedo! Mapper reteg bevezetese megoldhatja a problemat!
     @PostMapping("/update")
-    public ResponseEntity<?> updateServicePoint(@RequestBody final ServicePointRequest servicePointRequest) {
-        servicePointService.update(servicePointRequest);
+    public ResponseEntity<?> updateServicePoint(@RequestBody final ServicePoint servicePoint) {
+        servicePointService.update(servicePoint);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
