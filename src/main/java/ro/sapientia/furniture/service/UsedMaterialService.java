@@ -8,6 +8,7 @@ import ro.sapientia.furniture.model.dto.UsedMaterialRequest;
 import ro.sapientia.furniture.repository.UsedMaterialRepository;
 
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -36,7 +37,7 @@ public class UsedMaterialService {
                 .furnitureId(usedMaterialRequest.furnitureId())
                 .quantity(usedMaterialRequest.quantity())
                 .price(usedMaterialRequest.price())
-                .timestamp(usedMaterialRequest.timestamp())
+                .timestamp(new Timestamp(System.currentTimeMillis()))
                 .build();
         return this.usedMaterialRepository.saveAndFlush(usedMaterial);
     }
@@ -53,7 +54,7 @@ public class UsedMaterialService {
                 .furnitureId(usedMaterialRequest.furnitureId())
                 .quantity(usedMaterialRequest.quantity())
                 .price(usedMaterialRequest.price())
-                .timestamp(usedMaterialRequest.timestamp())
+                .timestamp(new Timestamp(System.currentTimeMillis()))
                 .build();
         return this.usedMaterialRepository.saveAndFlush(usedMaterial);
     }
