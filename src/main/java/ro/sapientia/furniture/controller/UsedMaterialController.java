@@ -16,7 +16,7 @@ import java.util.List;
 public class UsedMaterialController {
     private final UsedMaterialService usedMaterialService;
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<List<UsedMaterial>> getAllUsedMaterials() {
         final List<UsedMaterial> usedMaterials = usedMaterialService.findAll();
         return new ResponseEntity<>(usedMaterials, HttpStatus.OK);

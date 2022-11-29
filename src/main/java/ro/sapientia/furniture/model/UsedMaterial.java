@@ -18,6 +18,7 @@ public class UsedMaterial implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="pk_used_material_id")
     @SequenceGenerator(name="pk_used_material_id",sequenceName="pk_used_material_id")
     @Column(name = "used_material_id", nullable = false, updatable = false)
