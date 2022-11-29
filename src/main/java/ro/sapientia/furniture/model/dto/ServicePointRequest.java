@@ -1,7 +1,6 @@
 package ro.sapientia.furniture.model.dto;
 
 public record ServicePointRequest(
-    Long id,
     Long regionId,
     String country,
     String county,
