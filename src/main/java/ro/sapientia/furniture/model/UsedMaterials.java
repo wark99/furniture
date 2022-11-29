@@ -1,6 +1,5 @@
 package ro.sapientia.furniture.model;
 
-import org.elasticsearch.search.DocValueFormat.Decimal;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
@@ -19,10 +18,10 @@ public class UsedMaterials implements Serializable {
     // TODO: create foreign key connections
 
     @Column(name = "quantity")
-    private Decimal quantity;
+    private long quantity;
 
     @Column(name = "price")
-    private Decimal price;
+    private long price;
 
     @Column(name = "timestamp")
     private DateTime timestamp;
@@ -37,22 +36,22 @@ public class UsedMaterials implements Serializable {
         this.id = id;
     }
 
-    public Decimal getQuantity() {
+    public long getQuantity() {
 
         return quantity;
     }
 
-    public void setQuantity(Decimal quantity) {
+    public void setQuantity(long quantity) {
 
         this.quantity = quantity;
     }
 
-    public Decimal getPrice() {
+    public long getPrice() {
 
         return price;
     }
 
-    public void setPrice(Decimal price) {
+    public void setPrice(long price) {
 
         this.price = price;
     }
