@@ -34,9 +34,9 @@ public class SaleRepositoryTest {
 
 	@AfterEach
 	public void tearDown() {
-		regionRepository.deleteAll();
-		servicePointRepository.deleteAll();
 		saleRepository.deleteAll();
+		servicePointRepository.deleteAll();
+		regionRepository.deleteAll();
 	}
 
 	@Test
@@ -44,36 +44,22 @@ public class SaleRepositoryTest {
 		// given
 
 		// when
-		final int expected = saleRepository.findAll().size();
+		final List<Sale> expectedSales = saleRepository.findAll();
 
 		// then
-		assertEquals(0, expected);
+		assertEquals(0, expectedSales.size());
 	}
 
 	@Test
 	public void itShouldCreateOneSale() {
 		// given
-		Region region = new Region((long) 0, "Europe");
+		Region region = Region.builder().name("Europe").build();
 		region = regionRepository.saveAndFlush(region);
 
-		ServicePoint servicePoint = new ServicePoint(
-			(long) 0,
-			region,
-			"Romania",
-			"Mures",
-			"Targu Mures",
-			"Gheorghe Doja",
-			"23/A",
-			"123456"
-		);
+		ServicePoint servicePoint = ServicePoint.builder().region(region).build();
 		servicePoint = servicePointRepository.saveAndFlush(servicePoint);
 
-		Sale sale = new Sale(
-			(long) 0,
-			servicePoint,
-			new BigDecimal(1045.9),
-			new Timestamp(System.currentTimeMillis())
-		);
+		Sale sale = Sale.builder().servicePoint(servicePoint).build();
 
 		// when
 		sale = saleRepository.saveAndFlush(sale);
@@ -85,34 +71,20 @@ public class SaleRepositoryTest {
 	@Test
 	public void itShouldFindSalesByServicePoint() {
 		// given
-		Region region = new Region((long) 0, "Europe");
+		Region region = Region.builder().name("Europe").build();
 		region = regionRepository.saveAndFlush(region);
 
-		ServicePoint servicePoint = new ServicePoint(
-			(long) 0,
-			region,
-			"Romania",
-			"Mures",
-			"Targu Mures",
-			"Gheorghe Doja",
-			"23/A",
-			"123456"
-		);
+		ServicePoint servicePoint = ServicePoint.builder().region(region).build();
 		servicePoint = servicePointRepository.saveAndFlush(servicePoint);
 
-		Sale sale = new Sale(
-			(long) 0,
-			servicePoint,
-			new BigDecimal(1045.9),
-			new Timestamp(System.currentTimeMillis())
-		);
+		Sale sale = Sale.builder().servicePoint(servicePoint).build();
 		sale = saleRepository.saveAndFlush(sale);
 
 		// when
-		List<Sale> sales = saleRepository.findByServicePoint(servicePoint);
+		List<Sale> expectedSales = saleRepository.findByServicePoint(servicePoint);
 
 		// then
-		assertEquals(1, sales.size());
-		assertEquals(sale, sales.get(0));
+		assertEquals(1, expectedSales.size());
+		assertEquals(sale, expectedSales.get(0));
 	}
 }
