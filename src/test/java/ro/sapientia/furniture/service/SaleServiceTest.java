@@ -97,7 +97,6 @@ public class SaleServiceTest {
 		final Sale sale = Sale.builder().id(saleId).servicePoint(servicePoint).build();
 
 		// when
-		when(servicePointService.findServicePointBy(servicePointId)).thenReturn(servicePoint);
 		when(saleRepository.findByServicePoint(any(ServicePoint.class))).thenReturn(List.of(sale));
 		List<Sale> expectedSales = saleService.findByServicePoint(servicePoint);
 
