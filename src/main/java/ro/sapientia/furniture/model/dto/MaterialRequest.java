@@ -1,9 +1,11 @@
 package ro.sapientia.furniture.model.dto;
 
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
-public class MaterialDTO {
+@Data
+@Builder
+public class MaterialRequest {
     private Long servicePointId;
     private String name;
     private String origin;

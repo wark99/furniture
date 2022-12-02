@@ -1,69 +1,68 @@
 package ro.sapientia.furniture.service.impl;
 
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ro.sapientia.furniture.exception.MaterialNotFoundException;
 import ro.sapientia.furniture.model.Material;
-import ro.sapientia.furniture.model.dto.MaterialDTO;
+import ro.sapientia.furniture.model.UsedMaterial;
+import ro.sapientia.furniture.model.dto.MaterialRequest;
 import ro.sapientia.furniture.repository.MaterialsRepository;
+import ro.sapientia.furniture.repository.UsedMaterialRepository;
 import ro.sapientia.furniture.service.MaterialsService;
 import ro.sapientia.furniture.service.ServicePointService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class MaterialsServiceImpl implements MaterialsService {
     private final MaterialsRepository materialsRepository;
     private final ServicePointService servicePointService;
-
-    public MaterialsServiceImpl(final MaterialsRepository materialsRepository,
-                                final ServicePointService servicePointService) {
-        this.materialsRepository = materialsRepository;
-        this.servicePointService = servicePointService;
-    }
-
+    private final UsedMaterialRepository usedMaterialRepository;
 
     @Override
     public List<Material> getAllMaterials() {
-        if (Objects.equals(materialsRepository.findAll().size(), 0)) {
-            throw new MaterialNotFoundException(Material.class);
-        }
         return materialsRepository.findAll();
+    }
+
+    @Override
+    public List<Material> getByServicePointId(final Long id) {
+        return materialsRepository.getByServicePointId(id);
     }
 
     @Override
     public Material getMaterialById(final Long id) {
         var currentMaterial = materialsRepository.findById(id);
-
         if (currentMaterial.isEmpty()) {
             throw new MaterialNotFoundException(Material.class, Map.of("id", id.toString()));
         }
-
         return currentMaterial.get();
     }
 
     @Override
-    public Material createMaterial(final MaterialDTO materialDTO) {
+    public Material createMaterial(final MaterialRequest materialRequest) {
         var createdMaterial = Material.builder()
-                .servicePoint(servicePointService.findServicePointBy(materialDTO.getServicePointId()))
-                .name(materialDTO.getName())
-                .origin(materialDTO.getOrigin())
-                .unit(materialDTO.getUnit())
-                .unitPrice(materialDTO.getUnitPrice())
-                .quantity(materialDTO.getQuantity())
-                .quality(materialDTO.getQuality())
+                .servicePoint(servicePointService.findServicePointBy(materialRequest.getServicePointId()))
+                .name(materialRequest.getName())
+                .origin(materialRequest.getOrigin())
+                .unit(materialRequest.getUnit())
+                .unitPrice(materialRequest.getUnitPrice())
+                .quantity(materialRequest.getQuantity())
+                .quality(materialRequest.getQuality())
                 .build();
-        return materialsRepository.save(createdMaterial);
+        return materialsRepository.saveAndFlush(createdMaterial);
     }
 
     @Override
     public void updateMaterial(final Material material) {
-        var existingMaterial = getMaterialById(material.getId());
+        var existingMaterial = materialsRepository.findById(material.getId());
+        if (existingMaterial.isEmpty()) {
+            throw new MaterialNotFoundException(Material.class, Map.of("id", material.getId().toString()));
+        }
 
         var updatedMaterial = Material.builder()
-                .id(existingMaterial.getId())
+                .id(existingMaterial.get().getId())
                 .servicePoint(servicePointService.findServicePointBy(material.getServicePoint().getId()))
                 .name(material.getName())
                 .origin(material.getOrigin())
@@ -72,12 +71,19 @@ public class MaterialsServiceImpl implements MaterialsService {
                 .quantity(material.getQuantity())
                 .quality(material.getQuality())
                 .build();
-        materialsRepository.save(updatedMaterial);
+        materialsRepository.saveAndFlush(updatedMaterial);
     }
 
     @Override
     public void deleteMaterialById(final Long id) {
-        var currentMaterial = getMaterialById(id);
-        materialsRepository.deleteById(currentMaterial.getId());
+        var currentMaterial = materialsRepository.findById(id);
+        if (currentMaterial.isEmpty()) {
+            throw new MaterialNotFoundException(Material.class, Map.of("id", id.toString()));
+        }
+
+        for(UsedMaterial usedMaterial : usedMaterialRepository.findByMaterial(currentMaterial.get())) {
+            usedMaterialRepository.delete(usedMaterial);
+        }
+        materialsRepository.deleteById(currentMaterial.get().getId());
     }
 }
