@@ -19,7 +19,7 @@ public class ServicePointRequest {
     private String number;
     private String zipCode;
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
