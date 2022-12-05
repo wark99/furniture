@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.TestPropertySource;
 import ro.sapientia.furniture.mocking.ServicePointDatabaseBuilder;
-import ro.sapientia.furniture.model.ServicePoint;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ro.sapientia.furniture.mocking.RegionDatabaseBuilder.buildTestRegion;
 import static ro.sapientia.furniture.mocking.ServicePointDatabaseBuilder.buildTestServicePoints;
+import static ro.sapientia.furniture.utils.CheckComponentsEquality.assertServicePointEquals;
 
 //@DataJpaTest
 @SpringBootTest
@@ -123,23 +123,4 @@ public class ServicePointRepositoryTest {
         assertEquals(region.getName(), regionResult.getName());
     }
 
-    private void assertServicePointEquals(final ServicePoint servicePointExpectedResult, final ServicePoint servicePointResult) {
-        assertNotNull(servicePointResult.getId());
-        assertNotNull(servicePointResult.getRegion());
-        assertNotNull(servicePointResult.getRegion().getId());
-        assertNotNull(servicePointResult.getRegion().getName());
-        assertEquals(servicePointExpectedResult.getRegion().getName(), servicePointResult.getRegion().getName());
-        assertNotNull(servicePointResult.getCountry());
-        assertEquals(servicePointExpectedResult.getCountry(), servicePointResult.getCountry());
-        assertNotNull(servicePointResult.getCounty());
-        assertEquals(servicePointExpectedResult.getCounty(), servicePointResult.getCounty());
-        assertNotNull(servicePointResult.getCity());
-        assertEquals(servicePointExpectedResult.getCity(), servicePointResult.getCity());
-        assertNotNull(servicePointResult.getStreet());
-        assertEquals(servicePointExpectedResult.getStreet(), servicePointResult.getStreet());
-        assertNotNull(servicePointResult.getNumber());
-        assertEquals(servicePointExpectedResult.getNumber(), servicePointResult.getNumber());
-        assertNotNull(servicePointResult.getZipCode());
-        assertEquals(servicePointExpectedResult.getZipCode(), servicePointResult.getZipCode());
-    }
 }
