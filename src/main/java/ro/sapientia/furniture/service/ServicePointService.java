@@ -13,7 +13,7 @@ public interface ServicePointService {
 
     ServicePoint create(final ServicePointRequest servicePointRequest);
 
-    void update(final ServicePoint servicePoint);
+    void update(final ServicePointRequest servicePointRequest);
 
     void deleteServicePointBy(final Long id);
 }

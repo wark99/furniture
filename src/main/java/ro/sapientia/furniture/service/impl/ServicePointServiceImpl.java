@@ -49,19 +49,19 @@ public class ServicePointServiceImpl implements ServicePointService {
     }
 
     @Override
-    public void update(final ServicePoint servicePoint) {
-        final var existingServicePoint = findServicePointBy(servicePoint.getId());
-        final var updatedServicePoint = ServicePoint.builder()
-            .id(existingServicePoint.getId())
-            .region(regionService.findRegionBy(servicePoint.getRegion().getId()))
-            .country(servicePoint.getCountry())
-            .county(servicePoint.getCounty())
-            .city(servicePoint.getCity())
-            .street(servicePoint.getStreet())
-            .number(servicePoint.getNumber())
-            .zipCode(servicePoint.getZipCode())
-            .build();
-        servicePointRepository.saveAndFlush(updatedServicePoint);
+    public void update(final ServicePointRequest servicePointRequest) {
+        final var existingServicePoint = findServicePointBy(servicePointRequest.id());
+        final var servicePoint = ServicePoint.builder()
+                .id(existingServicePoint.getId())
+                .region(regionService.findRegionBy(servicePointRequest.regionId()))
+                .country(servicePointRequest.country())
+                .county(servicePointRequest.county())
+                .city(servicePointRequest.city())
+                .street(servicePointRequest.street())
+                .number(servicePointRequest.number())
+                .zipCode(servicePointRequest.zipCode())
+                .build();
+        servicePointRepository.saveAndFlush(servicePoint);
     }
 
     @Override

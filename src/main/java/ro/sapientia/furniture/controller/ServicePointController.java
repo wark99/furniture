@@ -41,8 +41,8 @@ public class ServicePointController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> updateServicePoint(@RequestBody final ServicePoint servicePoint) {
-        servicePointService.update(servicePoint);
+    public ResponseEntity<?> updateServicePoint(@RequestBody final ServicePointRequest servicePointRequest) {
+        servicePointService.update(servicePointRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
