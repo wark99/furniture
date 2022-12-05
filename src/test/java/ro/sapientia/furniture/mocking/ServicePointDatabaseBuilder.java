@@ -31,6 +31,7 @@ public class ServicePointDatabaseBuilder implements TestDataBuilder {
     @Override
     public void clean() {
         servicePointRepository.deleteAll();
+        regionRepository.deleteAll();
     }
 
     public static List<ServicePoint> buildTestServicePointsWithRegions(final List<Region> regions) {

@@ -15,6 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.TestPropertySource;
 import ro.sapientia.furniture.mocking.RegionDatabaseBuilder;
 import ro.sapientia.furniture.model.Region;
+import ro.sapientia.furniture.service.RegionService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,6 +33,9 @@ public class RegionRepositoryTest {
 
     @Autowired
     private RegionRepository underTest;
+
+    @Autowired
+    private RegionService regionService;
 
     @BeforeAll
     public static void setup(@Autowired final RegionDatabaseBuilder regionDatabaseBuilder) {
@@ -60,7 +64,7 @@ public class RegionRepositoryTest {
     @Test
     @Order(2)
     public void testFindByIdShouldFail() {
-        final var regionResult = underTest.findById(3L);
+        final var regionResult = underTest.findById(99L);
 
         assertTrue(regionResult.isEmpty());
     }
@@ -68,9 +72,10 @@ public class RegionRepositoryTest {
     @Test
     @Order(3)
     public void testFindByIdShouldSucceed() {
+        final var regionIdInDB = regionService.findRegions().get(0).getId();
         final var reginExpectedResult = buildTestRegions().get(0);
 
-        final var regionResult = underTest.findById(1L);
+        final var regionResult = underTest.findById(regionIdInDB);
 
         assertTrue(regionResult.isPresent());
         final var region = regionResult.get();
@@ -80,15 +85,16 @@ public class RegionRepositoryTest {
     @Test
     @Order(4)
     public void testDeleteByIdShouldFail() {
-        assertThrows(EmptyResultDataAccessException.class, () -> underTest.deleteById(3L));
+        assertThrows(EmptyResultDataAccessException.class, () -> underTest.deleteById(99L));
     }
 
     @Test
     @Order(5)
     public void testDeleteByIdShouldSucceed() {
+        final var regionIdInDB = regionService.findRegions().get(0).getId();
         final var regionListBefore = underTest.findAll();
 
-        underTest.deleteById(2L);
+        underTest.deleteById(regionIdInDB);
 
         final var regionListAfter = underTest.findAll();
         assertEquals(1, regionListBefore.size() - regionListAfter.size());
@@ -96,7 +102,7 @@ public class RegionRepositoryTest {
         assertTrue(deletedItem.isEmpty());
     }
 
-    private void assertRegionEquals(final Region reginExpectedResult, final Region regionResult) {
+    private static void assertRegionEquals(final Region reginExpectedResult, final Region regionResult) {
         assertNotNull(regionResult.getId());
         assertNotNull(regionResult.getName());
         assertEquals(reginExpectedResult.getName(), regionResult.getName());

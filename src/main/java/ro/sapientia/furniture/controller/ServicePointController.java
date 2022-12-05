@@ -34,14 +34,12 @@ public class ServicePointController {
         return new ResponseEntity<>(servicePoint, HttpStatus.OK);
     }
 
-    //TODO vaidam: Ez igy nagyon megengedo! Mapper reteg bevezetese megoldhatja a problemat!
     @PostMapping("/add")
     public ResponseEntity<ServicePoint> addServicePoint(@RequestBody final ServicePointRequest servicePointRequest) {
         final var servicePoint = servicePointService.create(servicePointRequest);
         return new ResponseEntity<>(servicePoint, HttpStatus.CREATED);
     }
 
-    //TODO vaidam: Ez igy nagyon megengedo! Mapper reteg bevezetese megoldhatja a problemat!
     @PostMapping("/update")
     public ResponseEntity<?> updateServicePoint(@RequestBody final ServicePoint servicePoint) {
         servicePointService.update(servicePoint);
