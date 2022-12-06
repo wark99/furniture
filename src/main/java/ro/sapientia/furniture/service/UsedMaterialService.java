@@ -60,8 +60,10 @@ public class UsedMaterialService {
     }
 
     public void delete(Long id) {
-
-        this.usedMaterialRepository.deleteById(id);
+        UsedMaterial usedMaterial = findById(id);
+        if (usedMaterial != null) {
+            this.usedMaterialRepository.delete(usedMaterial);
+        }
     }
 
 }

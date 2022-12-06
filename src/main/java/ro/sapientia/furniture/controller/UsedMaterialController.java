@@ -25,6 +25,9 @@ public class UsedMaterialController {
     @GetMapping("/{id}")
     public ResponseEntity<UsedMaterial> getUsedMaterialById(@PathVariable("id") Long id) {
         final UsedMaterial usedMaterial = usedMaterialService.findById(id);
+        if (usedMaterial == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(usedMaterial, HttpStatus.OK);
     }
 
