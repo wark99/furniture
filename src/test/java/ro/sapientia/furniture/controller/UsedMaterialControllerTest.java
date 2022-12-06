@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import ro.sapientia.furniture.mocking.UsedMaterialDatabaseBuilder;
 import ro.sapientia.furniture.model.UsedMaterial;
 import ro.sapientia.furniture.model.dto.UsedMaterialRequest;
 import ro.sapientia.furniture.service.UsedMaterialService;
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.sql.Timestamp;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -39,11 +40,10 @@ public class UsedMaterialControllerTest {
     private UsedMaterialService usedMaterialService;
 
     @Test
-    public void itShouldGetTwoUsedMaterials() throws Exception {
-        final UsedMaterial usedMaterial1 = new UsedMaterial();
-        final UsedMaterial usedMaterial2 = new UsedMaterial();
+    public void shouldGetAllUsedMaterials() throws Exception {
+        var usedMaterials = UsedMaterialDatabaseBuilder.buildTestUsedMaterials();
 
-        when(usedMaterialService.findAll()).thenReturn(List.of(usedMaterial1, usedMaterial2));
+        when(usedMaterialService.findAll()).thenReturn(usedMaterials);
 
         this.mockMvc.perform(get("/used_materials"))
                 .andDo(print())
@@ -53,21 +53,21 @@ public class UsedMaterialControllerTest {
     }
 
     @Test
-    public void itShouldGetOneUsedMaterialById() throws Exception {
-        final UsedMaterial usedMaterial = new UsedMaterial();
-        usedMaterial.setId(1L);
+    public void shouldGetOneUsedMaterialById() throws Exception {
+        var usedMaterials = UsedMaterialDatabaseBuilder.buildTestUsedMaterials();
 
-        when(usedMaterialService.findById(anyLong())).thenReturn(usedMaterial);
+        when(usedMaterialService.findById(anyLong())).thenReturn(usedMaterials.get(0));
 
         this.mockMvc.perform(get("/used_materials/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(1)));
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(content().json("{}"));
     }
 
     @Test
-    public void itShouldGet404ErrorForNonExistentUsedMaterial() throws Exception {
+    public void shouldGet404ErrorForNonExistentUsedMaterial() throws Exception {
         when(usedMaterialService.findById(anyLong())).thenReturn(null);
 
         this.mockMvc.perform(get("/used_materials/1"))
@@ -76,9 +76,9 @@ public class UsedMaterialControllerTest {
     }
 
     @Test
-    public void itShouldCreateOneUsedMaterial() throws Exception {
+    public void shouldCreateOneUsedMaterial() throws Exception {
         final ObjectMapper objectMapper = new ObjectMapper();
-        final UsedMaterialRequest usedMaterialRequest = new UsedMaterialRequest(1L, 1L, 1L, 0, null, null);
+        final UsedMaterialRequest usedMaterialRequest = new UsedMaterialRequest(1L, 1L, 1L, 10, new BigDecimal(100), new Timestamp(System.currentTimeMillis()));
         final UsedMaterial usedMaterial = new UsedMaterial();
         usedMaterial.setId(1L);
 
@@ -98,7 +98,7 @@ public class UsedMaterialControllerTest {
     }
 
     @Test
-    public void itShouldUpdateOneUsedMaterial() throws Exception {
+    public void shouldUpdateOneUsedMaterial() throws Exception {
         final ObjectMapper objectMapper = new ObjectMapper();
         final UsedMaterialRequest usedMaterialRequest = new UsedMaterialRequest(1L, 1L, 1L, 0, null, null);
         final BigDecimal price = new BigDecimal(15.3);
@@ -123,7 +123,7 @@ public class UsedMaterialControllerTest {
     }
 
     @Test
-    public void itShouldDeleteOneUsedMaterial() throws Exception {
+    public void shouldDeleteOneUsedMaterial() throws Exception {
         this.mockMvc.perform(delete("/used_materials/delete/1"))
                 .andDo(print())
                 .andExpect(status().isOk());

@@ -153,7 +153,7 @@ public class UsedMaterialServiceTest {
     }
 
     @Test
-    public void itShouldNotDeleteForNonExistentUsedMaterial() {
+    public void shouldNotDeleteForNonExistentUsedMaterial() {
         when(usedMaterialRepository.findById(anyLong())).thenReturn(Optional.empty());
         usedMaterialService.delete(1L);
 

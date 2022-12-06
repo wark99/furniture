@@ -34,14 +34,14 @@ public class UsedMaterialRepositoryTest {
     }
 
     @Test
-    public void itShouldBeEmpty() {
+    public void shouldBeEmpty() {
         List<UsedMaterial> expectedUsedMaterials = usedMaterialRepository.findAll();
 
         assertEquals(0, expectedUsedMaterials.size());
     }
 
     @Test
-    public void itShouldContainOneUsedMaterial() {
+    public void shouldContainOneUsedMaterial() {
         Region region = Region.builder().name("Romania").build();
         region = entityManager.persistAndFlush(region);
 
@@ -60,7 +60,7 @@ public class UsedMaterialRepositoryTest {
     }
 
     @Test
-    public void itShouldCreateOneUsedMaterial() {
+    public void shouldCreateOneUsedMaterial() {
         Region region = Region.builder().name("Romania").build();
         region = entityManager.persistAndFlush(region);
 
@@ -78,7 +78,7 @@ public class UsedMaterialRepositoryTest {
     }
 
     @Test
-    public void itShouldFindUsedMaterialsByMaterial() {
+    public void shouldFindUsedMaterialsByMaterial() {
         Region region = Region.builder().name("Romania").build();
         region = entityManager.persistAndFlush(region);
 
