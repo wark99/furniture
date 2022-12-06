@@ -4,7 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -17,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ro.sapientia.furniture.model.Sale;
+import ro.sapientia.furniture.model.SaledItem;
 import ro.sapientia.furniture.model.ServicePoint;
 import ro.sapientia.furniture.model.dto.SaleRequest;
 import ro.sapientia.furniture.repository.SaleRepository;
@@ -112,7 +116,7 @@ public class SaleServiceTest {
 		final long saleId = 1;
 		final SaleRequest saleRequest = new SaleRequest(
 				saleId,
-				(long) 1,
+				1L,
 				new BigDecimal(23),
 				new Timestamp(System.currentTimeMillis())
 		);
@@ -149,6 +153,36 @@ public class SaleServiceTest {
 		assertNotNull(expectedSale);
 		assertEquals(saleId, (long) expectedSale.getId());
 		assertEquals(servicePointId, (long) expectedSale.getServicePoint().getId());
+	}
+
+	@Test
+	public void deleteShouldDeleteOneItem() {
+		// given
+		final Sale sale = new Sale();
+		List<SaledItem> saledItems = List.of(new SaledItem(), new SaledItem());
+
+		// when
+		when(saleRepository.findById(anyLong())).thenReturn(Optional.of(sale));
+		when(saledItemRepository.findBySale(any(Sale.class))).thenReturn(saledItems);
+		saleService.delete(1L);
+
+		// then
+		verify(saledItemRepository, times(saledItems.size())).delete(any(SaledItem.class));
+		verify(saleRepository, times(1)).delete(any(Sale.class));
+	}
+
+	@Test
+	public void itShouldNotDeleteForNonExistentSale() {
+		// given
+
+		// when
+		when(saleRepository.findById(anyLong())).thenReturn(Optional.empty());
+		saleService.delete(1L);
+
+		// then
+		verify(saledItemRepository, times(0)).findBySale(any(Sale.class));
+		verify(saledItemRepository, times(0)).delete(any(SaledItem.class));
+		verify(saleRepository, times(0)).delete(any(Sale.class));
 	}
 
 }

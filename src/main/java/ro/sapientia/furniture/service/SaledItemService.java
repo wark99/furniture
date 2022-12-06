@@ -55,7 +55,10 @@ public class SaledItemService {
 	}
 
 	public void delete(Long id) {
-		this.saledItemRepository.deleteById(id);
+		SaledItem saledItem = findById(id);
+		if (saledItem != null) {
+			this.saledItemRepository.delete(saledItem);
+		}
 	}
 
 }

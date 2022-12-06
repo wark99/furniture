@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import ro.sapientia.furniture.model.Sale;
 import ro.sapientia.furniture.model.dto.SaleRequest;
-import ro.sapientia.furniture.service.RegionService;
 import ro.sapientia.furniture.service.SaleService;
 
 @RestController
@@ -32,8 +31,9 @@ public class SaleController {
 	}
 
 	@GetMapping("/get/{id}")
-	public ResponseEntity<Sale> getSaleById(@PathVariable("id") Long id) {
+	public ResponseEntity<?> getSaleById(@PathVariable("id") Long id) {
 		final Sale sale = saleService.findById(id);
+		if (sale == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		return new ResponseEntity<>(sale, HttpStatus.OK);
 	}
 

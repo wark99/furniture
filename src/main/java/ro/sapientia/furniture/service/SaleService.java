@@ -59,8 +59,8 @@ public class SaleService {
 			for (SaledItem saledItem : saledItemRepository.findBySale(sale)) {
 				saledItemRepository.delete(saledItem);
 			}
+			this.saleRepository.delete(sale);
 		}
-		this.saleRepository.deleteById(id);
 	}
 
 }

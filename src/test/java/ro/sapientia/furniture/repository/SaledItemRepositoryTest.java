@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 
 import ro.sapientia.furniture.model.Region;
@@ -22,23 +23,14 @@ import ro.sapientia.furniture.model.ServicePoint;
 public class SaledItemRepositoryTest {
 
 	@Autowired
-	private RegionRepository regionRepository;
-
-	@Autowired
-	private ServicePointRepository servicePointRepository;
-
-	@Autowired
-	private SaleRepository saleRepository;
+	private TestEntityManager entityManager;
 
 	@Autowired
 	private SaledItemRepository saledItemRepository;
 
 	@AfterEach
 	public void tearDown() {
-		saledItemRepository.deleteAll();
-		saleRepository.deleteAll();
-		servicePointRepository.deleteAll();
-		regionRepository.deleteAll();
+		entityManager.clear();
 	}
 
 	@Test
@@ -53,19 +45,41 @@ public class SaledItemRepositoryTest {
 	}
 
 	@Test
+	public void itShouldContainsOneItem() {
+		// given
+		Region region = Region.builder().name("Europe").build();
+		region = entityManager.persistAndFlush(region);
+
+		ServicePoint servicePoint = ServicePoint.builder().region(region).build();
+		servicePoint = entityManager.persistAndFlush(servicePoint);
+
+		Sale sale = Sale.builder().servicePoint(servicePoint).build();
+		sale = entityManager.persistAndFlush(sale);
+
+		SaledItem saledItem = SaledItem.builder().sale(sale).furnitureId((long) 1).build();
+		saledItem = entityManager.persistAndFlush(saledItem);
+
+		// when
+		List<SaledItem> expectedSaledItems = saledItemRepository.findAll();
+
+
+		// then
+		assertEquals(1, expectedSaledItems.size());
+	}
+
+	@Test
 	public void itShouldCreateOneSaledItem() {
 		// given
 		Region region = Region.builder().name("Europe").build();
-		region = regionRepository.saveAndFlush(region);
+		region = entityManager.persistAndFlush(region);
 
 		ServicePoint servicePoint = ServicePoint.builder().region(region).build();
-		servicePoint = servicePointRepository.saveAndFlush(servicePoint);
+		servicePoint = entityManager.persistAndFlush(servicePoint);
 
 		Sale sale = Sale.builder().servicePoint(servicePoint).build();
-		sale = saleRepository.saveAndFlush(sale);
+		sale = entityManager.persistAndFlush(sale);
 
-		final long saledItemId = 1;
-		SaledItem saledItem = SaledItem.builder().id(saledItemId).furnitureId((long) 1).sale(sale).build();
+		SaledItem saledItem = SaledItem.builder().sale(sale).furnitureId((long) 1).build();
 
 		// when
 		saledItem = saledItemRepository.saveAndFlush(saledItem);
@@ -78,16 +92,16 @@ public class SaledItemRepositoryTest {
 	public void itShouldFindSaledItemsBySale() {
 		// given
 		Region region = Region.builder().name("Europe").build();
-		region = regionRepository.saveAndFlush(region);
+		region = entityManager.persistAndFlush(region);
 
 		ServicePoint servicePoint = ServicePoint.builder().region(region).build();
-		servicePoint = servicePointRepository.saveAndFlush(servicePoint);
+		servicePoint = entityManager.persistAndFlush(servicePoint);
 
 		Sale sale = Sale.builder().servicePoint(servicePoint).build();
-		sale = saleRepository.saveAndFlush(sale);
+		sale = entityManager.persistAndFlush(sale);
 
 		SaledItem saledItem = SaledItem.builder().sale(sale).furnitureId((long) 1).build();
-		saledItem = saledItemRepository.saveAndFlush(saledItem);
+		saledItem = entityManager.persistAndFlush(saledItem);
 
 		// when
 		List<SaledItem> expectedSaledItems = saledItemRepository.findBySale(sale);
