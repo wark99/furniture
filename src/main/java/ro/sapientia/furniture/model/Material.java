@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serial;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -12,7 +14,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "materials")
-public class Material {
+public class Material implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "material_id", nullable = false)
@@ -26,7 +30,6 @@ public class Material {
     @JoinColumn(name = "service_point_id", nullable = false)
     private ServicePoint servicePoint;
 
-    @NotNull
     private String name;
 
     private String origin;
