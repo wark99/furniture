@@ -1,6 +1,7 @@
 package ro.sapientia.furniture.mocking;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ro.sapientia.furniture.model.Material;
 import ro.sapientia.furniture.model.UsedMaterial;
 import ro.sapientia.furniture.repository.MaterialsRepository;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+@Component
 public class UsedMaterialDatabaseBuilder implements TestDataBuilder{
     @Autowired
     private RegionRepository regionRepository;
