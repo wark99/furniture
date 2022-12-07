@@ -77,4 +77,12 @@ class FurnitureApplicationEETests {
             .andExpect(jsonPath("error", is("RECORD_NOT_FOUND")))
             .andExpect(jsonPath("message", is("ServicePoint table is empty!")));
     }
+
+    @Test
+    public void testGetAllMaterialsShouldReturnEmptyList() throws Exception {
+        mvc.perform(get("/materials/getAllMaterials"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[]"));
+    }
 }
