@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ro.sapientia.furniture.exception.MaterialNotFoundException;
 import ro.sapientia.furniture.mocking.MaterialsDatabaseBuilder;
-import ro.sapientia.furniture.mocking.ServicePointDatabaseBuilder;
 import ro.sapientia.furniture.model.Material;
 import ro.sapientia.furniture.model.dto.MaterialRequest;
 import ro.sapientia.furniture.repository.MaterialsRepository;
@@ -104,29 +103,29 @@ public class MaterialsServiceTest {
 
     @Test
     public void testUpdateMaterialWithInvalidId() {
-        var material = Material.builder()
+        var materialRequest = MaterialRequest.builder()
                 .id(1L)
-                .servicePoint(servicePointService.findServicePointBy(1L))
+                .servicePointId(1L)
                 .name("Material Name 1")
                 .build();
 
         when(materialsRepository.findById(anyLong())).thenReturn(Optional.empty());
-        Assertions.assertThrows(MaterialNotFoundException.class, () -> materialsService.updateMaterial(material));
+        Assertions.assertThrows(MaterialNotFoundException.class, () -> materialsService.updateMaterial(materialRequest));
         verify(materialsRepository, times(0)).saveAndFlush(any(Material.class));
     }
 
     @Test
     public void testUpdateMaterialWithValidId() {
-        var updatedMaterial = Material.builder()
+        var materialRequest = MaterialRequest.builder()
                 .id(1L)
-                .servicePoint(ServicePointDatabaseBuilder.buildTestServicePoints().get(0))
+                .servicePointId(1L)
                 .name("Material Name 1")
                 .build();
 
         var material = MaterialsDatabaseBuilder.buildTestMaterials().get(0);
         when(materialsRepository.findById(anyLong())).thenReturn(Optional.of(material));
 
-        materialsService.updateMaterial(updatedMaterial);
+        materialsService.updateMaterial(materialRequest);
         verify(materialsRepository, times(1)).saveAndFlush(any(Material.class));
     }
 

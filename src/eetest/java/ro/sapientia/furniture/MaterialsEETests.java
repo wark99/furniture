@@ -19,8 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import ro.sapientia.furniture.exception.MaterialNotFoundException;
 import ro.sapientia.furniture.mocking.MaterialsDatabaseBuilder;
-import ro.sapientia.furniture.model.Material;
-import ro.sapientia.furniture.model.ServicePoint;
 import ro.sapientia.furniture.model.dto.MaterialRequest;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -133,9 +131,9 @@ public class MaterialsEETests {
     @Test
     public void testUpdateMaterialShouldRunCorrectly() throws Exception {
         final ObjectMapper objectMapper = new ObjectMapper();
-        var material = Material.builder()
+        var materialRequest = MaterialRequest.builder()
                 .id(2L)
-                .servicePoint(ServicePoint.builder().id(1L).build())
+                .servicePointId(1L)
                 .name("Material Name 55")
                 .origin("Material Origin 1")
                 .unit("Material Unit 55")
@@ -146,7 +144,7 @@ public class MaterialsEETests {
 
         mockMvc.perform(post("/materials/updateMaterial")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(material))
+                .content(objectMapper.writeValueAsString(materialRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -154,9 +152,9 @@ public class MaterialsEETests {
     @Test
     public void testUpdateMaterialShouldFail() throws Exception {
         final ObjectMapper objectMapper = new ObjectMapper();
-        var material = Material.builder()
+        var materialRequest = MaterialRequest.builder()
                 .id(100L)
-                .servicePoint(ServicePoint.builder().id(1L).build())
+                .servicePointId(1L)
                 .name("Material Name 55")
                 .origin("Material Origin 1")
                 .unit("Material Unit 55")
@@ -167,7 +165,7 @@ public class MaterialsEETests {
 
         mockMvc.perform(post("/materials/updateMaterial")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(material))
+                        .content(objectMapper.writeValueAsString(materialRequest))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

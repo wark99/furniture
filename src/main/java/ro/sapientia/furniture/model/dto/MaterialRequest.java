@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class MaterialRequest {
+    private Long id;
     private Long servicePointId;
     private String name;
     private String origin;

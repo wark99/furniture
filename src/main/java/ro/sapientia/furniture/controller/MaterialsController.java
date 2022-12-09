@@ -35,8 +35,8 @@ public class MaterialsController {
     }
 
     @PostMapping("/updateMaterial")
-    public ResponseEntity<?> updateMaterial(@RequestBody final Material material) {
-        materialsService.updateMaterial(material);
+    public ResponseEntity<?> updateMaterial(@RequestBody final MaterialRequest materialRequest) {
+        materialsService.updateMaterial(materialRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

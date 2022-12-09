@@ -10,6 +10,6 @@ public interface MaterialsService {
     List<Material> getByServicePointId(Long id);
     Material getMaterialById(Long id);
     Material createMaterial(MaterialRequest materialRequest);
-    void updateMaterial(Material material);
+    void updateMaterial(MaterialRequest materialRequest);
     void deleteMaterialById(Long id);
 }
