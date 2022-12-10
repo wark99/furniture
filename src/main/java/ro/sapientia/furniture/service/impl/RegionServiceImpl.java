@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ro.sapientia.furniture.exception.RecordNotFoundException;
 import ro.sapientia.furniture.model.Region;
-import ro.sapientia.furniture.model.ServicePoint;
 import ro.sapientia.furniture.model.dto.RegionRequest;
 import ro.sapientia.furniture.repository.RegionRepository;
 import ro.sapientia.furniture.repository.ServicePointRepository;
@@ -24,10 +23,11 @@ public class RegionServiceImpl implements RegionService {
 
     @Override
     public List<Region> findRegions() {
-        if (Objects.equals(regionRepository.findAll().size(), 0)) {
+        final var regions = regionRepository.findAll();
+        if (Objects.equals(regions.size(), 0)) {
             throw new RecordNotFoundException(Region.class);
         }
-        return regionRepository.findAll();
+        return regions;
     }
 
     @Override
@@ -38,9 +38,7 @@ public class RegionServiceImpl implements RegionService {
 
     @Override
     public Region create(final RegionRequest regionRequest) {
-        final var region = Region.builder()
-            .name(regionRequest.name())
-            .build();
+        final var region = Region.builder().name(regionRequest.name()).build();
         return regionRepository.saveAndFlush(region);
     }
 
@@ -53,8 +51,7 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public void deleteRegionBy(final Long id) {
         final var existingRegion = findRegionBy(id);
-        final var servicePointList = servicePointRepository.findAllByRegion(existingRegion).orElseThrow(
-            () -> new RecordNotFoundException(ServicePoint.class, Map.of("region_id", id.toString())));
+        final var servicePointList = servicePointRepository.findAllByRegion(existingRegion);
         servicePointRepository.deleteAll(servicePointList);
         regionRepository.deleteById(id);
     }

@@ -6,9 +6,8 @@ import ro.sapientia.furniture.model.Region;
 import ro.sapientia.furniture.model.ServicePoint;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ServicePointRepository extends JpaRepository<ServicePoint, Long> {
-    Optional<List<ServicePoint>> findAllByRegion(final Region region);
+    List<ServicePoint> findAllByRegion(final Region region);
 }

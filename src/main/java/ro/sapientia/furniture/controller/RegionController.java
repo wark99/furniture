@@ -34,7 +34,6 @@ public class RegionController {
         return new ResponseEntity<>(region, HttpStatus.OK);
     }
 
-    //TODO vaidam: Ez igy nagyon megengedo! Mapper reteg bevezetese megoldhatja a problemat!
     @PostMapping("/add")
     public ResponseEntity<Region> addRegion(@RequestBody final RegionRequest regionRequest) {
         final var regionResponse = regionService.create(regionRequest);

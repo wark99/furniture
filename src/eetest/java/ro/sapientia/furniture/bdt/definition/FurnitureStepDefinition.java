@@ -1,7 +1,11 @@
-package ro.sapientia.furniture;
+package ro.sapientia.furniture.bdt.definition;
 
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.After;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.core.AutoConfigureCache;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -11,11 +15,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import ro.sapientia.furniture.model.FurnitureBody;
+
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -23,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@CucumberContextConfiguration
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -32,7 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureTestEntityManager
 @TestPropertySource(locations = "classpath:eetest.properties")
-class FurnitureApplicationEETests {
+@ContextConfiguration
+public class FurnitureStepDefinition {
 
     @Autowired
     private MockMvc mvc;
@@ -40,41 +47,35 @@ class FurnitureApplicationEETests {
     @Autowired
     private TestEntityManager entityManager;
 
-    private void addOneElement() {
-        final FurnitureBody body = new FurnitureBody();
-        body.setHeigth(10);
-        entityManager.persist(body);
+    @Given("^that we have the following furniture bodies:$")
+    public void that_we_have_the_following_furniture_bodies(final DataTable furnitureBodies) throws Throwable {
+        for (final Map<String, String> data : furnitureBodies.asMaps(String.class, String.class)) {
+            final FurnitureBody body = new FurnitureBody();
+            body.setHeigth(Integer.parseInt(data.get("heigth")));
+            body.setWidth(Integer.parseInt(data.get("width")));
+            body.setDepth(Integer.parseInt(data.get("depth")));
+            entityManager.persist(body);
+        }
         entityManager.flush();
+
     }
 
-    @Test
-    void furnitureAll_oneElement() throws Exception {
-        addOneElement();
+    @When("^I invoke the furniture all endpoint$")
+    public void I_invoke_the_furniture_all_endpoint() throws Throwable {
+    }
+
+    @Then("^I should get the heigth \"([^\"]*)\" for the position \"([^\"]*)\"$")
+    public void I_should_get_result_in_stories_list(final String expectedResult, final String expectedPosition) throws Throwable {
         mvc.perform(get("/furniture/all")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content()
                 .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$[0].heigth", is(10)));
+            .andExpect(jsonPath("$[" + expectedPosition + "].heigth", is(Integer.parseInt(expectedResult))));
     }
 
-    @Test
-    public void testGetRegionsShouldFail() throws Exception {
-        mvc.perform(get("/regions"))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("status", is(400)))
-            .andExpect(jsonPath("error", is("RECORD_NOT_FOUND")))
-            .andExpect(jsonPath("message", is("Region table is empty!")));
+    @After
+    public void closeBrowser() {
     }
 
-    @Test
-    public void testGetServicePointsShouldFail() throws Exception {
-        mvc.perform(get("/service_points"))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("status", is(400)))
-            .andExpect(jsonPath("error", is("RECORD_NOT_FOUND")))
-            .andExpect(jsonPath("message", is("ServicePoint table is empty!")));
-    }
 }
