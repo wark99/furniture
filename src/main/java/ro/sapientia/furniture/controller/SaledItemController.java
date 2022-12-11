@@ -46,6 +46,7 @@ public class SaledItemController {
 	@PostMapping("/update")
 	public ResponseEntity<SaledItem> updateSaledItem(@RequestBody SaledItemRequest saledItemRequest) {
 		final SaledItem persistentSaledItem = saledItemService.update(saledItemRequest);
+		if (persistentSaledItem == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		return new ResponseEntity<>(persistentSaledItem, HttpStatus.OK);
 	}
 
