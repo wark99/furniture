@@ -55,21 +55,21 @@ public class MaterialsServiceImpl implements MaterialsService {
     }
 
     @Override
-    public void updateMaterial(final Material material) {
-        var existingMaterial = materialsRepository.findById(material.getId());
+    public void updateMaterial(final MaterialRequest materialRequest) {
+        var existingMaterial = materialsRepository.findById(materialRequest.getId());
         if (existingMaterial.isEmpty()) {
-            throw new MaterialNotFoundException(Material.class, Map.of("id", material.getId().toString()));
+            throw new MaterialNotFoundException(Material.class, Map.of("id", materialRequest.getId().toString()));
         }
 
         var updatedMaterial = Material.builder()
                 .id(existingMaterial.get().getId())
-                .servicePoint(servicePointService.findServicePointBy(material.getServicePoint().getId()))
-                .name(material.getName())
-                .origin(material.getOrigin())
-                .unit(material.getUnit())
-                .unitPrice(material.getUnitPrice())
-                .quantity(material.getQuantity())
-                .quality(material.getQuality())
+                .servicePoint(servicePointService.findServicePointBy(materialRequest.getServicePointId()))
+                .name(materialRequest.getName())
+                .origin(materialRequest.getOrigin())
+                .unit(materialRequest.getUnit())
+                .unitPrice(materialRequest.getUnitPrice())
+                .quantity(materialRequest.getQuantity())
+                .quality(materialRequest.getQuality())
                 .build();
         materialsRepository.saveAndFlush(updatedMaterial);
     }

@@ -12,7 +12,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import ro.sapientia.furniture.exception.MaterialNotFoundException;
 import ro.sapientia.furniture.mocking.MaterialsDatabaseBuilder;
 import ro.sapientia.furniture.model.Material;
-import ro.sapientia.furniture.model.ServicePoint;
 import ro.sapientia.furniture.model.dto.MaterialRequest;
 import ro.sapientia.furniture.service.MaterialsService;
 
@@ -114,9 +113,9 @@ public class MaterialsControllerTest {
     @Test
     public void shouldUpdateMaterialWorkCorrectly() throws Exception{
         final ObjectMapper objectMapper = new ObjectMapper();
-        var material = Material.builder()
+        var material = MaterialRequest.builder()
                 .id(1L)
-                .servicePoint(ServicePoint.builder().build())
+                .servicePointId(1L)
                 .name("Material Name 2")
                 .origin("Material Origin 1")
                 .unit("Material Unit 2")
@@ -125,7 +124,7 @@ public class MaterialsControllerTest {
                 .quality("Material Quality 2")
                 .build();
 
-        doNothing().when(materialsService).updateMaterial(any(Material.class));
+        doNothing().when(materialsService).updateMaterial(any(MaterialRequest.class));
 
         this.mockMvc.perform(post("/materials/updateMaterial")
                         .content(objectMapper.writeValueAsString(material))
