@@ -3,14 +3,20 @@ package ro.sapientia.furniture.model.dto;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@JsonSerialize
-public record SaledItemRequest(
-		Long id,
-	    Long saleId,
-	    Long furnitureId,
-	    int quantity,
-	    BigDecimal price,
-		Timestamp timestamp
-    ) {}
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SaledItemRequest {
+	private Long id;
+	private Long saleId;
+	private Long furnitureId;
+	private int quantity;
+	private BigDecimal price;
+	private Timestamp timestamp;
+}

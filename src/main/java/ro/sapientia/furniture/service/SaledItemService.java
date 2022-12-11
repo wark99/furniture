@@ -31,25 +31,25 @@ public class SaledItemService {
 
 	public SaledItem create(SaledItemRequest saledItemRequest) {
 		final SaledItem saledItem =  SaledItem.builder()
-				.sale(saleService.findById(saledItemRequest.saleId()))
-				.furnitureId(saledItemRequest.furnitureId())
-				.quantity(saledItemRequest.quantity())
-				.price(saledItemRequest.price())
-				.timestamp(saledItemRequest.timestamp())
+				.sale(saleService.findById(saledItemRequest.getSaleId()))
+				.furnitureId(saledItemRequest.getFurnitureId())
+				.quantity(saledItemRequest.getQuantity())
+				.price(saledItemRequest.getPrice())
+				.timestamp(saledItemRequest.getTimestamp())
 				.build();
 		return this.saledItemRepository.saveAndFlush(saledItem);
 	}
 
 	public SaledItem update(SaledItemRequest saledItemRequest) {
-		final SaledItem existingSaledItem = findById(saledItemRequest.id());
+		final SaledItem existingSaledItem = findById(saledItemRequest.getId());
 		if (existingSaledItem == null) return null;
 		final SaledItem saledItem =  SaledItem.builder()
 				.id(existingSaledItem.getId())
-				.sale(saleService.findById(saledItemRequest.saleId()))
-				.furnitureId(saledItemRequest.furnitureId())
-				.quantity(saledItemRequest.quantity())
-				.price(saledItemRequest.price())
-				.timestamp(saledItemRequest.timestamp())
+				.sale(saleService.findById(saledItemRequest.getSaleId()))
+				.furnitureId(saledItemRequest.getFurnitureId())
+				.quantity(saledItemRequest.getQuantity())
+				.price(saledItemRequest.getPrice())
+				.timestamp(saledItemRequest.getTimestamp())
 				.build();
 		return this.saledItemRepository.saveAndFlush(saledItem);
 	}
