@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -93,8 +94,7 @@ public class SaleEETests {
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$", hasSize(2)))
-				.andExpect(jsonPath("$[0].id", is(sale1.getId().intValue())))
-				.andExpect(jsonPath("$[1].id", is(sale2.getId().intValue())));
+				.andExpect(jsonPath("$[*].id", containsInAnyOrder(sale1.getId().intValue(), sale2.getId().intValue())));
 	}
 
 	@Test
@@ -144,7 +144,12 @@ public class SaleEETests {
 
 		final BigDecimal totalPrice = new BigDecimal(23);
 		final Timestamp saledDate = new Timestamp(System.currentTimeMillis());
-		final SaleRequest saleRequest = new SaleRequest(1L, servicePoint.getId(), totalPrice, saledDate);
+		final SaleRequest saleRequest = SaleRequest.builder()
+					.id(0L)
+					.servicePointId(servicePoint.getId())
+					.totalPrice(totalPrice)
+					.saledDate(saledDate)
+					.build();
 
 		// when
 
@@ -157,8 +162,10 @@ public class SaleEETests {
 		)
 				.andDo(print())
 				.andExpect(status().isOk())
-//				.andExpect(jsonPath("$.id", is(1)))
-				.andExpect(jsonPath("$.totalPrice", is(totalPrice)));
+				.andExpect(jsonPath("$.id").exists())
+				.andExpect(jsonPath("$.servicePoint.id", is(servicePoint.getId().intValue())))
+				.andExpect(jsonPath("$.totalPrice").exists())
+				.andExpect(jsonPath("$.saledDate").exists());
 	}
 
 	@Test
@@ -177,10 +184,12 @@ public class SaleEETests {
 
 		final BigDecimal totalPrice = new BigDecimal(23);
 		final Timestamp saledDate = new Timestamp(System.currentTimeMillis());
-		final SaleRequest saleRequest = new SaleRequest(sale.getId(), servicePoint.getId(), totalPrice, saledDate);
-
-		System.out.println(sale);
-		System.out.println(saleRequest);
+		final SaleRequest saleRequest = SaleRequest.builder()
+					.id(sale.getId())
+					.servicePointId(servicePoint.getId())
+					.totalPrice(totalPrice)
+					.saledDate(saledDate)
+					.build();
 
 		// when
 
@@ -194,7 +203,9 @@ public class SaleEETests {
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(sale.getId().intValue())))
-				.andExpect(jsonPath("$.totalPrice", is(totalPrice)));
+				.andExpect(jsonPath("$.servicePoint.id", is(servicePoint.getId().intValue())))
+				.andExpect(jsonPath("$.totalPrice").exists())
+				.andExpect(jsonPath("$.saledDate").exists());
 	}
 
 }

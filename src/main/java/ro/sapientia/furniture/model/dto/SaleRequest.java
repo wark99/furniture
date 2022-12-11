@@ -3,12 +3,18 @@ package ro.sapientia.furniture.model.dto;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@JsonSerialize
-public record SaleRequest(
-		Long id,
-	    Long servicePointId,
-	    BigDecimal totalPrice,
-		Timestamp saledDate
-    ) {}
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SaleRequest {
+	private Long id;
+	private Long servicePointId;
+	private BigDecimal totalPrice;
+	private Timestamp saledDate;
+}

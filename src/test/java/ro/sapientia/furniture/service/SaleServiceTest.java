@@ -74,12 +74,11 @@ public class SaleServiceTest {
 		//given
 		final long saleId = 1;
 		final long servicePointId = 1;
-		final SaleRequest saleRequest = new SaleRequest(
-				saleId,
-				servicePointId,
-				new BigDecimal(23),
-				new Timestamp(System.currentTimeMillis())
-		);
+		final SaleRequest saleRequest = SaleRequest.builder()
+				.servicePointId(servicePointId)
+				.totalPrice(new BigDecimal(23))
+				.saledDate(new Timestamp(System.currentTimeMillis()))
+				.build();
 		final ServicePoint servicePoint = ServicePoint.builder().id(servicePointId).build();
 		final Sale sale = Sale.builder().id(saleId).servicePoint(servicePoint).build();
 
@@ -114,12 +113,12 @@ public class SaleServiceTest {
 	public void updateShouldReturnNullForNonExistentSale() {
 		// given
 		final long saleId = 1;
-		final SaleRequest saleRequest = new SaleRequest(
-				saleId,
-				1L,
-				new BigDecimal(23),
-				new Timestamp(System.currentTimeMillis())
-		);
+		final SaleRequest saleRequest = SaleRequest.builder()
+				.id(saleId)
+				.servicePointId(1L)
+				.totalPrice(new BigDecimal(23))
+				.saledDate(new Timestamp(System.currentTimeMillis()))
+				.build();
 
 		//when
 		when(saleRepository.findById(any())).thenReturn(Optional.empty());
@@ -136,12 +135,12 @@ public class SaleServiceTest {
 		final long servicePointId = 1;
 		final ServicePoint servicePoint = ServicePoint.builder().id(servicePointId).build();
 		final Sale sale = Sale.builder().id(saleId).servicePoint(servicePoint).build();
-		final SaleRequest saleRequest = new SaleRequest(
-				saleId,
-				servicePointId,
-				new BigDecimal(23),
-				new Timestamp(System.currentTimeMillis())
-		);
+		final SaleRequest saleRequest = SaleRequest.builder()
+				.id(saleId)
+				.servicePointId(servicePointId)
+				.totalPrice(new BigDecimal(23))
+				.saledDate(new Timestamp(System.currentTimeMillis()))
+				.build();
 
 		//when
 		when(saleRepository.findById(any())).thenReturn(Optional.of(sale));
