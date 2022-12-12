@@ -1,0 +1,12 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    container_name: qa-database
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/furniture
