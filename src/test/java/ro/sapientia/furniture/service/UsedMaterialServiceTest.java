@@ -16,8 +16,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ro.sapientia.furniture.exception.MaterialNotFoundException;
+import ro.sapientia.furniture.exception.UsedMaterialNotFoundException;
+import ro.sapientia.furniture.mocking.MaterialsDatabaseBuilder;
+import ro.sapientia.furniture.mocking.UsedMaterialDatabaseBuilder;
 import ro.sapientia.furniture.model.Material;
 import ro.sapientia.furniture.model.UsedMaterial;
 import ro.sapientia.furniture.model.dto.UsedMaterialRequest;
@@ -48,14 +53,10 @@ public class UsedMaterialServiceTest {
     }
 
     @Test
-    public void findByIdShouldReturnNullForNonExistentUsedMaterial() {
+    public void findByIdShouldThrowExceptionForNonExistentUsedMaterial() {
 
-        final long usedMaterialID = 1;
-
-        when(usedMaterialRepository.findById(usedMaterialID)).thenReturn(Optional.empty());
-        final UsedMaterial expectedUsedMaterial = usedMaterialService.findById(usedMaterialID);
-
-        assertNull(expectedUsedMaterial);
+        when(usedMaterialRepository.findById(anyLong())).thenReturn(Optional.empty());
+        Assertions.assertThrows(UsedMaterialNotFoundException.class, () -> usedMaterialService.findById(10L));
     }
 
     @Test
@@ -99,7 +100,7 @@ public class UsedMaterialServiceTest {
     }
 
     @Test
-    public void updateShouldReturnNullForNonExistentUsedMaterial() {
+    public void updateShouldThrowExceptionForNonExistentUsedMaterial() {
         final long usedMaterialID = 1;
         final UsedMaterialRequest usedMaterialRequest = new UsedMaterialRequest(
                 usedMaterialID,
@@ -111,9 +112,8 @@ public class UsedMaterialServiceTest {
         );
 
         when(usedMaterialRepository.findById(any())).thenReturn(Optional.empty());
-        final UsedMaterial expectedUsedMaterial = usedMaterialService.update(usedMaterialRequest);
-
-        assertNull(expectedUsedMaterial);
+        Assertions.assertThrows(UsedMaterialNotFoundException.class, () -> usedMaterialService.update(usedMaterialRequest));
+        verify(usedMaterialRepository, times(0)).saveAndFlush(any(UsedMaterial.class));
     }
 
     @Test
@@ -144,19 +144,19 @@ public class UsedMaterialServiceTest {
 
     @Test
     public void deleteShouldDeleteOneUsedMaterial() {
-        final UsedMaterial usedMaterial = new UsedMaterial();
+        final UsedMaterial usedMaterial = UsedMaterialDatabaseBuilder.buildTestUsedMaterials().get(0);
 
         when(usedMaterialRepository.findById(anyLong())).thenReturn(Optional.of(usedMaterial));
         usedMaterialService.delete(1L);
 
-        verify(usedMaterialRepository, times(1)).delete(any(UsedMaterial.class));
+        verify(usedMaterialRepository, times(1)).deleteById(anyLong());
+
     }
 
     @Test
     public void shouldNotDeleteForNonExistentUsedMaterial() {
         when(usedMaterialRepository.findById(anyLong())).thenReturn(Optional.empty());
-        usedMaterialService.delete(1L);
-
-        verify(usedMaterialRepository, times(0)).delete(any(UsedMaterial.class));
+        Assertions.assertThrows(UsedMaterialNotFoundException.class, () -> usedMaterialService.delete(1L));
+        verify(usedMaterialRepository, times(0)).deleteById(anyLong());
     }
 }
