@@ -34,21 +34,21 @@ public class SaleService {
 
 	public Sale create(SaleRequest saleRequest) {
 		final Sale sale =  Sale.builder()
-				.servicePoint(servicePointService.findServicePointBy(saleRequest.servicePointId()))
-				.totalPrice(saleRequest.totalPrice())
-				.saledDate(saleRequest.saledDate())
+				.servicePoint(servicePointService.findServicePointBy(saleRequest.getServicePointId()))
+				.totalPrice(saleRequest.getTotalPrice())
+				.saledDate(saleRequest.getSaledDate())
 				.build();
 		return this.saleRepository.saveAndFlush(sale);
 	}
 
 	public Sale update(SaleRequest saleRequest) {
-		final Sale existingSale = findById(saleRequest.id());
+		final Sale existingSale = findById(saleRequest.getId());
 		if (existingSale == null) return null;
 		final Sale sale =  Sale.builder()
 				.id(existingSale.getId())
-				.servicePoint(servicePointService.findServicePointBy(saleRequest.servicePointId()))
-				.totalPrice(saleRequest.totalPrice())
-				.saledDate(saleRequest.saledDate())
+				.servicePoint(servicePointService.findServicePointBy(saleRequest.getServicePointId()))
+				.totalPrice(saleRequest.getTotalPrice())
+				.saledDate(saleRequest.getSaledDate())
 				.build();
 		return this.saleRepository.saveAndFlush(sale);
 	}

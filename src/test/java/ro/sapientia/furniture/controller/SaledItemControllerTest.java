@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -91,7 +92,6 @@ public class SaledItemControllerTest {
 	public void itShouldCreateOneSaledItem() throws Exception {
 		// given
 		final ObjectMapper objectMapper = new ObjectMapper();
-		final SaledItemRequest saledItemRequest = new SaledItemRequest(1L, 1L, 1L, 0, null, null);
 		final SaledItem saledItem = new SaledItem();
 		saledItem.setId(1L);
 
@@ -101,7 +101,7 @@ public class SaledItemControllerTest {
 		// then
 		this.mockMvc.perform(
 				post("/saled-items/create")
-					.content(objectMapper.writeValueAsString(saledItemRequest))
+					.content(objectMapper.writeValueAsString(new SaledItemRequest()))
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON)
 		)
@@ -116,7 +116,7 @@ public class SaledItemControllerTest {
 	public void itShouldUpdateOneSaledItem() throws Exception {
 		// given
 		final ObjectMapper objectMapper = new ObjectMapper();
-		final SaledItemRequest saledItemRequest = new SaledItemRequest(1L, 1L, 1L, 0, null, null);
+		final SaledItemRequest saledItemRequest = SaledItemRequest.builder().id(1L).build();
 		final BigDecimal price = new BigDecimal(15.3);
 		final SaledItem saledItem = new SaledItem();
 		saledItem.setId(1L);

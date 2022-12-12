@@ -90,7 +90,9 @@ public class SaleControllerTest {
 	public void itShouldCreateOneSale() throws Exception {
 		// given
 		final ObjectMapper objectMapper = new ObjectMapper();
-		final SaleRequest saleRequest = new SaleRequest(1L, 1L, null, null);
+		final SaleRequest saleRequest = SaleRequest.builder()
+				.servicePointId(1L)
+				.build();
 		final Sale sale = new Sale();
 		sale.setId(1L);
 
@@ -115,7 +117,9 @@ public class SaleControllerTest {
 	public void itShouldUpdateOneSale() throws Exception {
 		// given
 		final ObjectMapper objectMapper = new ObjectMapper();
-		final SaleRequest saleRequest = new SaleRequest(1L, 1L, null, null);
+		final SaleRequest saleRequest = SaleRequest.builder()
+				.servicePointId(1L)
+				.build();
 		final BigDecimal totalPrice = new BigDecimal(23.9);
 		final Sale sale = new Sale();
 		sale.setId(1L);

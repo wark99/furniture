@@ -87,14 +87,14 @@ public class SaledItemServiceTest {
 		//given
 		final long saledItemId = 1;
 		final long saleId = 1;
-		final SaledItemRequest saledItemRequest = new SaledItemRequest(
-				saledItemId,
-				saleId,
-				(long) 1,
-				1,
-				new BigDecimal(23),
-				new Timestamp(System.currentTimeMillis())
-		);
+		final SaledItemRequest saledItemRequest = SaledItemRequest.builder()
+				.id(saledItemId)
+				.saleId(saleId)
+				.furnitureId(1L)
+				.quantity(1)
+				.price(new BigDecimal(23))
+				.timestamp(new Timestamp(System.currentTimeMillis()))
+				.build();
 		final Sale sale = Sale.builder().id(saleId).build();
 		final SaledItem saledItem = SaledItem.builder().id(saledItemId).sale(sale).build();
 
@@ -111,14 +111,14 @@ public class SaledItemServiceTest {
 	public void updateShouldReturnNullForNonExistentSaledItem() {
 		// given
 		final long saledItemId = 1;
-		final SaledItemRequest saledItemRequest = new SaledItemRequest(
-				saledItemId,
-				(long) 1,
-				(long) 1,
-				1,
-				new BigDecimal(23),
-				new Timestamp(System.currentTimeMillis())
-		);
+		final SaledItemRequest saledItemRequest = SaledItemRequest.builder()
+				.id(saledItemId)
+				.saleId(1L)
+				.furnitureId(1L)
+				.quantity(1)
+				.price(new BigDecimal(23))
+				.timestamp(new Timestamp(System.currentTimeMillis()))
+				.build();
 
 		//when
 		when(saledItemRepository.findById(any())).thenReturn(Optional.empty());
@@ -135,14 +135,14 @@ public class SaledItemServiceTest {
 		final long saleId = 1;
 		final Sale sale = Sale.builder().id(saleId).build();
 		final SaledItem saledItem = SaledItem.builder().id(saledItemId).sale(sale).build();
-		final SaledItemRequest saledItemRequest = new SaledItemRequest(
-				saledItemId,
-				saleId,
-				(long) 1,
-				1,
-				new BigDecimal(23),
-				new Timestamp(System.currentTimeMillis())
-		);
+		final SaledItemRequest saledItemRequest = SaledItemRequest.builder()
+				.id(saledItemId)
+				.saleId(saleId)
+				.furnitureId(1L)
+				.quantity(1)
+				.price(new BigDecimal(23))
+				.timestamp(new Timestamp(System.currentTimeMillis()))
+				.build();
 
 		//when
 		when(saledItemRepository.findById(any())).thenReturn(Optional.of(saledItem));
