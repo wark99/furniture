@@ -33,6 +33,7 @@ public class SaledItemController {
 	@GetMapping("/get/{id}")
 	public ResponseEntity<SaledItem> getSaledItemById(@PathVariable("id") Long id) {
 		final SaledItem saledItem = saledItemService.findById(id);
+		if (saledItem == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		return new ResponseEntity<>(saledItem, HttpStatus.OK);
 	}
 

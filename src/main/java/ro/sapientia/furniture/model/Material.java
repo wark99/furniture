@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serial;
+//import java.io.Serial;
 import java.io.Serializable;
 
 @Getter
@@ -15,8 +15,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity(name = "materials")
 public class Material implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    //@Serial
+    //private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "material_id", nullable = false)

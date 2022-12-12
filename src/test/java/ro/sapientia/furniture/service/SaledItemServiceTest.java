@@ -4,7 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -151,6 +154,31 @@ public class SaledItemServiceTest {
 		assertNotNull(expectedSaledItem);
 		assertEquals(saledItemId, (long) expectedSaledItem.getId());
 		assertEquals(saleId, (long) expectedSaledItem.getSale().getId());
+	}
+
+	@Test
+	public void deleteShouldDeleteOneItem() {
+		// given
+		final SaledItem saledItem = new SaledItem();
+
+		// when
+		when(saledItemRepository.findById(anyLong())).thenReturn(Optional.of(saledItem));
+		saledItemService.delete(1L);
+
+		// then
+		verify(saledItemRepository, times(1)).delete(any(SaledItem.class));
+	}
+
+	@Test
+	public void itShouldNotDeleteForNonExistentSaledItem() {
+		// given
+
+		// when
+		when(saledItemRepository.findById(anyLong())).thenReturn(Optional.empty());
+		saledItemService.delete(1L);
+
+		// then
+		verify(saledItemRepository, times(0)).delete(any(SaledItem.class));
 	}
 
 }
