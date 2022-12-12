@@ -33,6 +33,8 @@ public class MaterialsDatabaseBuilder implements TestDataBuilder{
     @Override
     public void clean() {
         materialsRepository.deleteAll();
+        servicePointRepository.deleteAll();
+        regionRepository.deleteAll();
     }
 
     public static List<Material> buildTestMaterials() {

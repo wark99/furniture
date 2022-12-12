@@ -40,8 +40,10 @@ public class UsedMaterialDatabaseBuilder implements TestDataBuilder{
 
     @Override
     public void clean() {
-
         usedMaterialRepository.deleteAll();
+        materialsRepository.deleteAll();
+        servicePointRepository.deleteAll();
+        regionRepository.deleteAll();
     }
 
     public static List<UsedMaterial> buildTestUsedMaterials() {

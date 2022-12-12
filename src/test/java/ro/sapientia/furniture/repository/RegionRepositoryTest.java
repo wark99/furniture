@@ -98,7 +98,7 @@ public class RegionRepositoryTest {
 
         final var regionListAfter = underTest.findAll();
         assertEquals(1, regionListBefore.size() - regionListAfter.size());
-        final var deletedItem = underTest.findById(2L);
+        final var deletedItem = underTest.findById(regionIdInDB);
         assertTrue(deletedItem.isEmpty());
     }
 
