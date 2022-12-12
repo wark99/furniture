@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureTestEntityManager
 @TestPropertySource(locations = "classpath:eetest.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class UsedMaterialEETest {
     @Autowired
     private MockMvc mockMvc;
@@ -46,17 +48,13 @@ public class UsedMaterialEETest {
     private TestEntityManager testEntityManager;
 
     @BeforeAll
-    public static void setUp(@Autowired final MaterialsDatabaseBuilder materialsDatabaseBuilder,
-                             @Autowired final UsedMaterialDatabaseBuilder usedMaterialDatabaseBuilder) {
-        materialsDatabaseBuilder.build();
+    public static void setUp(@Autowired final UsedMaterialDatabaseBuilder usedMaterialDatabaseBuilder) {
         usedMaterialDatabaseBuilder.build();
     }
 
     @AfterAll
-    public static void cleanUp(@Autowired final MaterialsDatabaseBuilder materialsDatabaseBuilder,
-                               @Autowired final UsedMaterialDatabaseBuilder usedMaterialDatabaseBuilder) {
+    public static void cleanUp(@Autowired final UsedMaterialDatabaseBuilder usedMaterialDatabaseBuilder) {
         usedMaterialDatabaseBuilder.clean();
-        materialsDatabaseBuilder.clean();
     }
 
     @Test
